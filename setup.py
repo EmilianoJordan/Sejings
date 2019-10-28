@@ -2,8 +2,6 @@
 # Author:  Emiliano Jordan,
 # Project: settings
 import os
-from pathlib import Path
-import sys
 from setuptools import setup, find_packages
 
 
@@ -34,8 +32,8 @@ setup(
     name=about['__name__'],
     packages=find_packages(),
     project_urls={
-        'Source': 'https://github.com/EmilianoJordan/settings/',
-        'Tracker': 'https://github.com/EmilianoJordan/settings/issues',
+        'Source': 'https://github.com/EmilianoJordan/Sejings/',
+        'Tracker': 'https://github.com/EmilianoJordan/Sejings/issues',
     },
     tests_require=[
         'pytest>=3.5.*',

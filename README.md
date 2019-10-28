@@ -1,17 +1,30 @@
 # Settings
 
-Settings is meant to be a quick and simple tool to rapidly integrate project
-settings. This was inspired by a desire to work with a solution similar
-to MatPlotLibs' rcParams and to improve on it.
+Settings is meant to be a quick and simple tool to rapidly integrate 
+project settings. This was inspired by a desire to work with a 
+solution similar to MatPlotLib's rcParams and to improve on the 
+developer experience and speed by avoiding None checks.
 
-One advantage of Settings is the ability for IDEs to code complete the 
-settings object statically (work still needs to be done on dynamically).
-This allows developers to easily see what settings are available to them
-without having to leave the IDE and visit project documentation. 
+```python
+# This is the development process I'd like to change.
+def add(*nums, cache=None, cache_path=None):
+    if cache is None:
+        cache = settings['cache']
+    if cache_path is None:
+        cache_path = settings['cache.path']
+    
+    result = sum(nums)
+    
+    if cache: # True
+        save_to_cache(result, cache_path) #'/some/dir/path'
+    
+    return result
+```
 
-Obviously dictionaries would be the fastest way to accomplish settings. 
-This project is meant to be friendly to developers consuming packages 
-and to encourage rapid development over absolute runtime speed.
+Obviously dictionaries would be computationally the fastest way to 
+accomplish settings. This project is meant to be friendly to developers 
+consuming packages and to encourage rapid development over absolute 
+runtime speed. We're using Python after all, right?
 
 # Usage
 
@@ -20,10 +33,8 @@ Import settings and create the settings you need:
 ```python
 from sejings import settings
 
-settings.cheese_shop.cheshire.name = 'Cheshire'
-settings.cheese_shop.cheshire.quantity = 0
-settings.cheese_shop.liptauer.name = 'Liptauer'
-settings.cheese_shop.liptauer.quantity = 0
+settings.cache = True
+settings.cache.path = '/some/dir/path'
 
 ```
 
@@ -34,96 +45,57 @@ being passed into the function:
 
 ```python
 from sejings import extract_settings
-from my_project import settings
-
-@extract_settings('cheese')
-def add_stock(quantity, cheese=settings.cheese_shop.cheshire):
-    cheese.quantity()  quantity
-    return cheese
-
-assert (0, 0) == add_stock(0)
-
-settings.cheese_shop.liptauer = 20
-
-assert (0, 20) == add_stock(0, settings.cheese_shop.liptauer)
-```
-
-The value of a settings branch can always be evaluated by calling
-the attribute. Work is still being done on Settings manipulation but
-most castings should work as well.
-
-```python
-from settings import settings
-
-settings.cheese_shop.cheshire = 0
-settings.cheese_shop.liptauer = 0
-
-type(settings.cheese_shop.cheshire)
-# settings.settings.Settings
-
-type(settings.cheese_shop.cheshire())
-# int
-
-float(settings.cheese_shop.cheshire)
-# 0.0
-
-int(settings.cheese_shop.cheshire)
-# 0
-
-str(settings.cheese_shop.chesire)
-# '0'
-
-```
-
-# More Examples
-
-```python
-from pathlib import Path
-from settings import settings, extract_settings
-
-
-settings.cache = True
-settings.cache.path = Path(__file__).parent / 'cache'
 
 @extract_settings
-def cache_to_disk(file: Path, 
-                  cache: bool=settings.cache, 
-                  cache_path: Path = settings.cache.path):
-
-    if not cache:
-        return
-        
-    cache_path /= file.name
+def add(*nums, cache=settings.cache, cache_path=settings.cache.path):
+    result = sum(nums)
     
-    # do cache things
-
+    if cache: # True
+        save_to_cache(result, cache_path) #'/some/dir/path'
+    
+    return result
 ```
 
-If you'd like to have different settings you can either create another 
-branch or a new instance of settings
+A branch is evaluated when an endpoint is called.
 
 ```python
-from pathlib import Path
-from settings import settings, Settings
+from sejings import extract_settings
 
+def add(*nums, cache=settings.cache, cache_path=settings.cache.path):
+    result = sum(nums)
+    
+    if cache(): # True
+        save_to_cache(result, cache_path()) #'/some/dir/path'
+    
+    return result
+```
 
-settings.cache = True
-settings.cache.path = Path(__file__).parent / 'cache'
-settings.warnings.DepreciatedWarning = 'ignore'
-settings.warnings.UserWarning = 'default'
+In some cases passing in arguments as a Settings object may be
+desired. This is accomplished by adding the argument name to the 
+@extract_settings arguments.
 
-# or
+```python
+from sejings import extract_settings
 
-warnings = Settings()
-warnings.DepreciatedWarning = 'ignore'
-warnings.UserWarning = 'default'
+@extract_settings('cache')
+def add(*nums, cache=settings.cache):
+    result = sum(nums)
+    
+    if cache(): # True
+        save_to_cache(result, cache.path()) #'/some/dir/path'
+    
+    return result
 ```
 
 ## @TODO
 
-* Address dynamic inspection
+* I'm exploring options right now to allow methods to be called directly
+    on self._val but am weighing the pros and cons. The SettingsNumber
+    class published is something I'm exploring and should not be 
+    depended on as it may change. 
+* Context manager
 * Property decorators
-* Copy and deepcopy functionality
+* Copy functionality
 * Iteration
 * Dictionary like functionality
 * IO to file. Look into integration with configparser.
