@@ -3,6 +3,6 @@
 # Project: settings
 
 from .__version__ import *
-from .decorator import extract_settings
-from .core import Settings, settings
+from .decorator import extract_sejings
+from .core import Sejings, sejings
 

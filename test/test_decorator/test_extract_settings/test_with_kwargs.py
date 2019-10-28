@@ -1,8 +1,8 @@
 # Created: 10/20/2019
 # Author:  Emiliano Jordan,
-# Project: settings
+# Project: sejings
 
-from sejings import extract_settings, settings as s
+from sejings import extract_sejings, sejings as s
 
 s.one = 'kw_one'
 s.two = 'kw_two'
@@ -14,7 +14,7 @@ s.three.one = 'three.one'
 # Testing a simple function with key word arguments.
 ########################################################################
 
-@extract_settings()
+@extract_sejings()
 def basic_function_with_kwargs(a_one, a_two, kw_one=s.one, kw_two=s.two, kw_three='kw_three'):
     return a_one, a_two, kw_one, kw_two, kw_three
 
@@ -40,7 +40,7 @@ def test_kwarg_as_positional_arg():
 # decorator.
 ########################################################################
 
-@extract_settings
+@extract_sejings
 def no_paren_function_with_kwargs(a_one, a_two, kw_one=s.one, kw_two=s.two, kw_three='kw_three'):
     return a_one, a_two, kw_one, kw_two, kw_three
 

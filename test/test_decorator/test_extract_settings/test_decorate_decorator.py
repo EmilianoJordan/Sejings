@@ -1,10 +1,10 @@
 # Created: 10/20/2019
 # Author:  Emiliano Jordan,
-# Project: settings
+# Project: sejings
 
 from functools import wraps, lru_cache
 
-from sejings import extract_settings, settings as s
+from sejings import extract_sejings, sejings as s
 
 s.one = 'kw_one'
 s.two = 'kw_two'
@@ -14,7 +14,7 @@ s.three.one = 'three.one'
 
 ########################################################################
 # Need to make sure this works if there's a decorator between
-# extract_settings and the function. This shouldn't be a problem
+# extract_sejings and the function. This shouldn't be a problem
 # and the partial unwrapping should handle this just fine.
 ########################################################################
 
@@ -26,7 +26,7 @@ def decorator(f):
     return wrapper
 
 
-@extract_settings()
+@extract_sejings()
 @decorator
 def double_dec_function(a_one, a_two, kw_one=s.one, kw_two=s.two, kw_three='kw_three'):
     return a_one, a_two, kw_one, kw_two, kw_three
@@ -52,7 +52,7 @@ def test_double_dec_basic_call():
 # in the while statement.
 ########################################################################
 
-@extract_settings()
+@extract_sejings()
 @lru_cache(maxsize=128)
 def differing_signatures_functions(
         a_one, a_two, kw_one=s.one, kw_two=s.two, kw_three='kw_three'
@@ -72,7 +72,7 @@ def test():
 # No Parenthesis version of the appropriate tests.
 ########################################################################
 
-@extract_settings
+@extract_sejings
 @decorator
 def no_paren_double_dec_function(a_one, a_two, kw_one=s.one, kw_two=s.two, kw_three='kw_three'):
     return a_one, a_two, kw_one, kw_two, kw_three
@@ -86,7 +86,7 @@ def test_no_paren_double_dec_basic_call():
     assert result == proper_return
 
 
-@extract_settings()
+@extract_sejings()
 @lru_cache(maxsize=128)
 def no_paren_differing_signatures_functions(
         a_one, a_two, kw_one=s.one, kw_two=s.two, kw_three='kw_three'

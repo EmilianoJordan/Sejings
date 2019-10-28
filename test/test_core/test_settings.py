@@ -1,12 +1,12 @@
 # Created: 10/26/2019
 # Author:  Emiliano Jordan,
 # Project: sejings
-from sejings import Settings
-from sejings.core import SettingsNumber
+from sejings import Sejings
+from sejings.core import SejingsNumber
 
 
 def test_initial():
-    s = Settings()
+    s = Sejings()
 
     s.one = 'one'
     s.two = 'two'
@@ -22,7 +22,7 @@ def test_initial():
 
 
 def test_number_factory():
-    s = Settings()
+    s = Sejings()
 
     s.one = 1
     s.two = 2
@@ -30,12 +30,12 @@ def test_number_factory():
     assert s.one() == 1
     assert s.two() == 2
 
-    assert isinstance(s.one, SettingsNumber)
-    assert isinstance(s.two, SettingsNumber)
+    assert isinstance(s.one, SejingsNumber)
+    assert isinstance(s.two, SejingsNumber)
 
 
 def test_type_change():
-    s = Settings()
+    s = Sejings()
 
     s.one = 'one'
     s.two = 'two'
@@ -49,12 +49,12 @@ def test_type_change():
     assert s.one() == 1
     assert s.two() == 2
 
-    assert isinstance(s.one, SettingsNumber)
-    assert isinstance(s.two, SettingsNumber)
+    assert isinstance(s.one, SejingsNumber)
+    assert isinstance(s.two, SejingsNumber)
 
 
 def test_type_change_with_copy():
-    s = Settings()
+    s = Sejings()
 
     s.one = 'one'
     s.two = 'two'
@@ -70,8 +70,8 @@ def test_type_change_with_copy():
     assert s.one() == 1
     assert s.two() == 2
 
-    assert isinstance(s.one, SettingsNumber)
-    assert isinstance(s.two, SettingsNumber)
+    assert isinstance(s.one, SejingsNumber)
+    assert isinstance(s.two, SejingsNumber)
 
     assert s.one.one() == 'one.one'
     assert s.one.two() == 'one.two'

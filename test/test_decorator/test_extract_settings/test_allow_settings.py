@@ -1,7 +1,7 @@
 # Created: 10/25/2019
 # Author:  Emiliano Jordan,
-# Project: settings
-from sejings import extract_settings, settings as s
+# Project: sejings
+from sejings import extract_sejings, sejings as s
 
 s.one = 'kw_one'
 s.two = 'kw_two'
@@ -13,7 +13,7 @@ s.three.one = 'three.one'
 # Testing a simple function with key word arguments.
 ########################################################################
 
-@extract_settings('a_one', 'kw_one')
+@extract_sejings('a_one', 'kw_one')
 def basic_function_with_kwargs(a_one, a_two, kw_one=s.one, kw_two=s.two, kw_three='kw_three'):
     return a_one, a_two, kw_one, kw_two, kw_three
 
