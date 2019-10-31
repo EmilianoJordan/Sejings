@@ -2,7 +2,7 @@
 # Author:  Emiliano Jordan,
 # Project: sejings
 
-from sejings import extract_sejings, sejings as s
+from sejings import extract_settings, sejings as s
 
 s.one = 'kw_one'
 s.two = 'kw_two'
@@ -10,7 +10,7 @@ s.three = 'three'
 s.three.one = 'three.one'
 
 
-@extract_sejings()
+@extract_settings()
 def function_no_args():
     return None
 
@@ -19,7 +19,7 @@ def test_no_arguments():
     assert function_no_args() is None
 
 
-@extract_sejings
+@extract_settings
 def no_parent_function_no_args():
     return None
 

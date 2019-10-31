@@ -2,7 +2,7 @@
 # Author:  Emiliano Jordan,
 # Project: sejings
 
-from sejings import extract_sejings, sejings as s
+from sejings import extract_settings, sejings as s
 
 s.one = 'kw_one'
 s.two = 'kw_two'
@@ -14,7 +14,7 @@ s.three.one = 'three.one'
 # Testing a simple function with key word arguments.
 ########################################################################
 
-@extract_sejings()
+@extract_settings()
 def basic_function_with_kwargs(a_one, a_two, kw_one=s.one, kw_two=s.two, kw_three='kw_three'):
     return a_one, a_two, kw_one, kw_two, kw_three
 
@@ -40,7 +40,7 @@ def test_kwarg_as_positional_arg():
 # decorator.
 ########################################################################
 
-@extract_sejings
+@extract_settings
 def no_paren_function_with_kwargs(a_one, a_two, kw_one=s.one, kw_two=s.two, kw_three='kw_three'):
     return a_one, a_two, kw_one, kw_two, kw_three
 

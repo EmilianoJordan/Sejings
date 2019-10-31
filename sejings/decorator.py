@@ -5,10 +5,10 @@
 from functools import wraps
 from inspect import getfullargspec
 
-from .core import Sejings
+from .core import Settings
 
 
-def extract_sejings(*ignore_args):
+def extract_settings(*ignore_args):
     if (len(ignore_args) == 1
             and callable(ignore_args[0])
             and not isinstance(ignore_args[0], str)):
@@ -27,7 +27,7 @@ def _extract_settings_wrapper(func, *ignore_args):
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        # ##### Parse Function Signature for kwarg Sejings ########## #
+        # ##### Parse Function Signature for kwarg Settings ########## #
         # Get the argument specification for the function. This
         # comes with one caveat, if a function has a decorator with
         # a different signature (think functools.lru_cache) then
@@ -43,16 +43,16 @@ def _extract_settings_wrapper(func, *ignore_args):
 
         argspec = getfullargspec(func_for_argspec)
 
-        # Iterate through args to evaluate any Sejings instances
+        # Iterate through args to evaluate any Settings instances
         list_args = list(args)
         for i, (name, val) in enumerate(zip(argspec.args, args)):
-            if isinstance(val, Sejings) and name not in ignore_args:
+            if isinstance(val, Settings) and name not in ignore_args:
                 list_args[i] = val()
         args = tuple(list_args)
 
-        # Iterate through kwargs to evaluate any Sejings instance
+        # Iterate through kwargs to evaluate any Settings instance
         for name, val in kwargs.items():
-            if isinstance(val, Sejings) and name not in ignore_args:
+            if isinstance(val, Settings) and name not in ignore_args:
                 kwargs[name] = val()
 
         # ####### Get names and default values for all kwargs ######## #
@@ -85,9 +85,9 @@ def _extract_settings_wrapper(func, *ignore_args):
             return func(*args, **kwargs)
 
         for name, val in zip(kwarg_names, defaults):
-            # Evaluate any Sejings instance that is in a kwarg and
+            # Evaluate any Settings instance that is in a kwarg and
             # hasn't been already defined by the function call.
-            if name not in kwargs and isinstance(val, Sejings) and name not in ignore_args:
+            if name not in kwargs and isinstance(val, Settings) and name not in ignore_args:
                 kwargs[name] = val()
 
         return func(*args, **kwargs)

@@ -32,8 +32,8 @@ setup(
     name=about['__name__'],
     packages=find_packages(),
     project_urls={
-        'Source': 'https://github.com/EmilianoJordan/Sejings/',
-        'Tracker': 'https://github.com/EmilianoJordan/Sejings/issues',
+        'Source': 'https://github.com/EmilianoJordan/Settings/',
+        'Tracker': 'https://github.com/EmilianoJordan/Settings/issues',
     },
     tests_require=[
         'pytest>=3.5.*',

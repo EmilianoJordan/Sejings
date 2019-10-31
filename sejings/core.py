@@ -4,7 +4,7 @@
 from collections import defaultdict
 
 
-class Sejings:
+class Settings:
 
     def __new__(cls, value=None, old_class=...):
         return super().__new__(object_class_mapping[type(value)])
@@ -32,7 +32,7 @@ class Sejings:
 
     def __getattr__(self, item):
         # print('Hit __getattr__', item, getattr(self(), item), callable(getattr(self(), item)))
-        setattr(self, item, Sejings())
+        setattr(self, item, Settings())
         return super().__getattribute__(item)
 
     def __setattr__(self, key, value):
@@ -41,14 +41,14 @@ class Sejings:
             super().__setattr__(key, value)
             return
 
-        if isinstance(value, Sejings):
+        if isinstance(value, Settings):
             super().__setattr__(key, value)
             return
 
         try:
             stale = super().__getattribute__(key)
         except AttributeError:
-            super().__setattr__(key, Sejings(value))
+            super().__setattr__(key, Settings(value))
             return
 
         stale_type = object_class_mapping[type(stale())]
@@ -58,10 +58,10 @@ class Sejings:
             stale(value)
             return
 
-        super().__setattr__(key, Sejings(value, stale))
+        super().__setattr__(key, Settings(value, stale))
 
 
-class SejingsNumber(Sejings):
+class SettingsNumber(Settings):
     def __add__(self, other):
         return self() + other
 
@@ -123,8 +123,8 @@ class SejingsNumber(Sejings):
         return int(self._va)
 
 
-object_class_mapping = defaultdict(lambda: Sejings)
-object_class_mapping[int] = SejingsNumber
-object_class_mapping[float] = SejingsNumber
+object_class_mapping = defaultdict(lambda: Settings)
+object_class_mapping[int] = SettingsNumber
+object_class_mapping[float] = SettingsNumber
 
-sejings = Sejings()
+sejings = Settings()
