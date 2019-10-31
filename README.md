@@ -39,7 +39,7 @@ settings.cache.path = '/some/dir/path'
 
 ```
  
-To evaluate settings passed into function as arguments.
+To evaluate settings passed into a function as an argument 
 use the @extract_settings decorator. This will evaluate all 
 settings in the function definition and in the arguments
 being passed into the function:
@@ -57,7 +57,7 @@ def add(*nums, cache=settings.cache, cache_path=settings.cache.path):
     return result
 ```
 
-A branch is evaluated when an endpoint is called.
+A branch is also evaluated when an endpoint is called.
 
 ```python
 assert settings.cache()
@@ -77,8 +77,6 @@ desired. This is accomplished by adding the argument name to the
 @extract_settings arguments.
 
 ```python
-from sejings import extract_settings
-
 @extract_settings('cache')
 def add(*nums, cache=settings.cache):
     result = sum(nums)
@@ -96,7 +94,6 @@ def add(*nums, cache=settings.cache):
     class published is something I'm exploring and should not be 
     depended on as it may change. 
 * Context manager
-* Class decorator?
 * Copy functionality
 * Iteration
 * __getitem__, __setitem__
