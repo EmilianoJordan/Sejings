@@ -2,26 +2,14 @@
 # Author:  Emiliano Jordan,
 # Project: settings
 from collections import defaultdict
-
+from .utils import in_doctest
 
 class Settings:
 
-    def __new__(cls, value=None, old_class=...):
-        return super().__new__(object_class_mapping[type(value)])
 
-    def __init__(self, value=None, old_class=...):
+    def __init__(self, value=None):
+
         super().__setattr__('_val', value)
-
-        if old_class is ...:
-            return
-
-        generator = ((key, val)
-                     for key, val
-                     in old_class.__dict__.items()
-                     if key != '_val')
-
-        for key, val in generator:
-            super().__setattr__(key, val)
 
     def __call__(self, value=...):
 
@@ -31,7 +19,10 @@ class Settings:
         super().__setattr__('_val', value)
 
     def __getattr__(self, item):
-        # print('Hit __getattr__', item, getattr(self(), item), callable(getattr(self(), item)))
+
+        if item == '__wrapped__' and in_doctest():
+            raise AttributeError
+
         setattr(self, item, Settings())
         return super().__getattribute__(item)
 
@@ -46,85 +37,11 @@ class Settings:
             return
 
         try:
-            stale = super().__getattribute__(key)
+            obj = super().__getattribute__(key)
+            obj(value)
         except AttributeError:
             super().__setattr__(key, Settings(value))
             return
 
-        stale_type = object_class_mapping[type(stale())]
-        value_type = object_class_mapping[type(value)]
-
-        if stale_type is value_type:
-            stale(value)
-            return
-
-        super().__setattr__(key, Settings(value, stale))
-
-
-class SettingsNumber(Settings):
-    def __add__(self, other):
-        return self() + other
-
-    def __iadd__(self, other):
-        self(self() + other)
-
-    def __radd__(self, other):
-        return self() + other
-
-    def __sub__(self, other):
-        return self() - other
-
-    def __isub__(self, other):
-        self(self() - other)
-
-    def __rsub__(self, other):
-        return other - self()
-
-    def __mul__(self, other):
-        return self() * other
-
-    def __imul__(self, other):
-        self(self() * other)
-
-    def __rmul__(self, other):
-        return self() * other
-
-    def __truediv__(self, other):
-        return self() / other
-
-    def __itruediv__(self, other):
-        self(self() / other)
-
-    def __rtruediv__(self, other):
-        return other / self()
-
-    def __pow__(self, power, modulo=None):
-        return pow(self(), power, modulo)
-
-    def __ipow__(self, other):
-        self(self() ** other)
-
-    def __rpow__(self, other):
-        return other ** self()
-
-    def __neg__(self):
-        return -self()
-
-    def __pos__(self):
-        return +self()
-
-    def __abs__(self):
-        return abs(self())
-
-    def __invert__(self):
-        return ~self()
-
-    def __int__(self):
-        return int(self._va)
-
-
-object_class_mapping = defaultdict(lambda: Settings)
-object_class_mapping[int] = SettingsNumber
-object_class_mapping[float] = SettingsNumber
 
 sejings = Settings()

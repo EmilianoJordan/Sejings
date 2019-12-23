@@ -3,12 +3,12 @@
 # Project: settings
 
 __author__ = 'Emiliano Jordan'
-__author_email__ = 'emiliano.jordan+settings@protonmail.com'
+__author_email__ = 'emiliano.jordan+sejings@protonmail.com'
 __description__ = 'A simple package for rapidly developing system settings.'
 __licence__ = 'Apache License 2.0'
 __name__ = 'sejings'
-__url__ = 'https://github.com/EmilianoJordan/Settings'
-__version__ = '0.0.1'
+__url__ = 'https://github.com/EmilianoJordan/Sejings'
+__version__ = '0.0.2'
 
 __all__ = [
     '__author__', '__author_email__', '__description__', '__licence__',
