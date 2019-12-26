@@ -1,11 +1,10 @@
 # Created: 10/12/2019
 # Author:  Emiliano Jordan,
 # Project: sejings
-from collections import defaultdict
 from .utils import in_doctest
 
-class Sejings:
 
+class Sejings:
 
     def __init__(self, value=None):
 
@@ -43,5 +42,17 @@ class Sejings:
             super().__setattr__(key, Sejings(value))
             return
 
+    def __copy__(self):
+        new = self.__class__()
+
+        for attr, val in self.__dict__.items():
+            if hasattr(val, '__copy__'):
+                setattr(new, attr, val.__copy__())
+            elif hasattr(val, 'copy'):
+                setattr(new, attr, val.copy())
+            else:
+                setattr(new, attr, val)
+
+        return new
 
 sejings = Sejings()
