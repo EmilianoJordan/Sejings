@@ -2,7 +2,7 @@
 # Author:  Emiliano Jordan,
 # Project: sejings
 
-from sejings import extract_settings, sejings as s
+from sejings import extract_sejings, sejings as s
 
 s.one = 'kw_one'
 s.two = 'kw_two'
@@ -14,7 +14,7 @@ s.three.one = 'three.one'
 # Testing a basic function call with only arguments.
 ########################################################################
 
-@extract_settings()
+@extract_sejings()
 def basic_function(a_one, a_two):
     return a_one, a_two
 
@@ -40,7 +40,7 @@ def test_basic_call_with_sejings():
 # decorator.
 ########################################################################
 
-@extract_settings
+@extract_sejings
 def no_paren_basic_function(a_one, a_two):
     return a_one, a_two
 

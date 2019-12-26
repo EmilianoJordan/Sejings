@@ -1,10 +1,10 @@
 # Created: 10/12/2019
 # Author:  Emiliano Jordan,
-# Project: settings
+# Project: sejings
 from collections import defaultdict
 from .utils import in_doctest
 
-class Settings:
+class Sejings:
 
 
     def __init__(self, value=None):
@@ -23,7 +23,7 @@ class Settings:
         if item == '__wrapped__' and in_doctest():
             raise AttributeError
 
-        setattr(self, item, Settings())
+        setattr(self, item, Sejings())
         return super().__getattribute__(item)
 
     def __setattr__(self, key, value):
@@ -32,7 +32,7 @@ class Settings:
             super().__setattr__(key, value)
             return
 
-        if isinstance(value, Settings):
+        if isinstance(value, Sejings):
             super().__setattr__(key, value)
             return
 
@@ -40,8 +40,8 @@ class Settings:
             obj = super().__getattribute__(key)
             obj(value)
         except AttributeError:
-            super().__setattr__(key, Settings(value))
+            super().__setattr__(key, Sejings(value))
             return
 
 
-sejings = Settings()
+sejings = Sejings()

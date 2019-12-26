@@ -1,7 +1,7 @@
 # Created: 10/12/2019
 # Author:  Emiliano Jordan,
-# Project: settings
+# Project: sejings
 
 from .__version__ import *
-from .decorator import extract_settings
-from .core import Settings, sejings
+from .decorator import extract_sejings
+from .core import Sejings, sejings

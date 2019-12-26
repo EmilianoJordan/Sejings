@@ -4,7 +4,7 @@
 
 from typing import Any
 
-from sejings import extract_settings, sejings as s
+from sejings import extract_sejings, sejings as s
 
 s.one = 'kw_one'
 s.two = 'kw_two'
@@ -18,7 +18,7 @@ s.three.one = 'three.one'
 # the getfullargspec call.
 ########################################################################
 
-@extract_settings()
+@extract_sejings()
 def vkwargs_function(a_one, a_two, kw_one: Any = s.one, kw_two: Any = s.two, kw_three='kw_three',
                      **kwargs):
     return a_one, a_two, kw_one, kw_two, kw_three, kwargs
@@ -50,7 +50,7 @@ def test_vkwargs():
 # Test no parenthesis decorator call.
 ########################################################################
 
-@extract_settings
+@extract_sejings
 def no_paren_vkwargs_function(a_one, a_two, kw_one=s.one, kw_two=s.two, kw_three='kw_three', **kwargs):
     return a_one, a_two, kw_one, kw_two, kw_three, kwargs
 

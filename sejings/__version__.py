@@ -1,14 +1,14 @@
 # Created: 10/19/2019
 # Author:  Emiliano Jordan,
-# Project: settings
+# Project: sejings
 
 __author__ = 'Emiliano Jordan'
 __author_email__ = 'emiliano.jordan+sejings@protonmail.com'
-__description__ = 'A simple package for rapidly developing system settings.'
+__description__ = 'A simple package for rapidly developing system sejings.'
 __licence__ = 'Apache License 2.0'
 __name__ = 'sejings'
 __url__ = 'https://github.com/EmilianoJordan/Sejings'
-__version__ = '0.0.2'
+__version__ = '0.0.3'
 
 __all__ = [
     '__author__', '__author_email__', '__description__', '__licence__',

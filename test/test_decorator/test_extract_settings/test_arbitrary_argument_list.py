@@ -2,7 +2,7 @@
 # Author:  Emiliano Jordan,
 # Project: sejings
 
-from sejings import extract_settings, sejings as s
+from sejings import extract_sejings, sejings as s
 
 s.one = 'kw_one'
 s.two = 'kw_two'
@@ -15,7 +15,7 @@ s.three.one = 'three.one'
 # path in the main if block in the decorator.
 ########################################################################
 
-@extract_settings()
+@extract_sejings()
 def vargs_function(a_one, a_two, *args, kw_one=s.one, kw_two=s.two, kw_three='kw_three'):
     return a_one, a_two, args, kw_one, kw_two, kw_three
 
@@ -59,7 +59,7 @@ def test_vargs_and_kwargs():
 # This should be another path in the main if block in the decorator.
 ########################################################################
 
-@extract_settings
+@extract_sejings
 def no_paren_vargs_function(a_one, a_two, *args, kw_one=s.one, kw_two=s.two, kw_three='kw_three'):
     return a_one, a_two, args, kw_one, kw_two, kw_three
 

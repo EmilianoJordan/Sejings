@@ -1,11 +1,11 @@
 # Created: 10/26/2019
 # Author:  Emiliano Jordan,
 # Project: sejings
-from sejings import Settings
+from sejings import Sejings
 
 
 def test_initial():
-    s = Settings()
+    s = Sejings()
 
     s.one = 'one'
     s.two = 'two'

@@ -1,6 +1,6 @@
 # Created: 10/18/2019
 # Author:  Emiliano Jordan,
-# Project: settings
+# Project: sejings
 import os
 from setuptools import setup, find_packages
 
@@ -32,8 +32,8 @@ setup(
     name=about['__name__'],
     packages=find_packages(),
     project_urls={
-        'Source': 'https://github.com/EmilianoJordan/Settings/',
-        'Tracker': 'https://github.com/EmilianoJordan/Settings/issues',
+        'Source': 'https://github.com/EmilianoJordan/Sejings/',
+        'Tracker': 'https://github.com/EmilianoJordan/Sejings/issues',
     },
     tests_require=[
         'pytest>=3.5.*',

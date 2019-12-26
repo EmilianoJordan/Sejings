@@ -1,7 +1,7 @@
-# Settings
+# Sejings
 
 Sejings is meant to be a quick and simple tool to rapidly integrate 
-project settings. This was inspired by a desire to work with a 
+project sejings. This was inspired by a desire to work with a 
 solution similar to MatPlotLib's rcParams and to improve on the 
 developer experience and developing speed by avoiding None checks.
 
@@ -10,9 +10,9 @@ This is the development experience I'm trying to avoid:
 def add(*nums, cache=None, cache_path=None):
     
     if cache is None:
-        cache = settings['cache']
+        cache = sejings['cache']
     if cache_path is None:
-        cache_path = settings['cache.path']
+        cache_path = sejings['cache.path']
     
     result = sum(nums)
     
@@ -23,32 +23,32 @@ def add(*nums, cache=None, cache_path=None):
 ```
 
 Obviously dictionaries would be computationally the fastest way to 
-accomplish settings. This project is meant to be friendly to developers 
+accomplish sejings. This project is meant to be friendly to developers 
 consuming packages and to encourage rapid development over absolute 
 runtime speed. We're using Python after all, right?
 
 # Usage
 
-Import settings and create the settings you need:
+Import sejings and create the sejings you need:
 
 ```python
-from sejings import settings
+from sejings import sejings
 
-settings.cache = True
-settings.cache.path = '/some/dir/path'
+sejings.cache = True
+sejings.cache.path = '/some/dir/path'
 
 ```
  
-To evaluate settings passed into a function as an argument 
-use the @extract_settings decorator. This will evaluate all 
-settings in the function definition and in the arguments
+To evaluate sejings passed into a function as an argument 
+use the @extract_sejings decorator. This will evaluate all 
+sejings in the function definition and in the arguments
 being passed into the function:
 
 ```python
-from settings import extract_settings
+from sejings import extract_sejings
 
-@extract_settings
-def add(*nums, cache=settings.cache, cache_path=settings.cache.path):
+@extract_sejings
+def add(*nums, cache=sejings.cache, cache_path=sejings.cache.path):
     result = sum(nums)
     
     if cache: # True
@@ -60,10 +60,10 @@ def add(*nums, cache=settings.cache, cache_path=settings.cache.path):
 A branch is also evaluated when an endpoint is called.
 
 ```python
-assert settings.cache()
-assert settings.cache.path() == '/some/dir/path'
+assert sejings.cache()
+assert sejings.cache.path() == '/some/dir/path'
 
-def add(*nums, cache=settings.cache, cache_path=settings.cache.path):
+def add(*nums, cache=sejings.cache, cache_path=sejings.cache.path):
     result = sum(nums)
     
     if cache(): # True
@@ -72,13 +72,13 @@ def add(*nums, cache=settings.cache, cache_path=settings.cache.path):
     return result
 ```
 
-In some cases defining arguments as a Settings object may be
+In some cases defining arguments as a Sejings object may be
 desired. This is accomplished by adding the argument name to the 
-@extract_settings arguments.
+@extract_sejings arguments.
 
 ```python
-@extract_settings('cache')
-def add(*nums, cache=settings.cache):
+@extract_sejings('cache')
+def add(*nums, cache=sejings.cache):
     result = sum(nums)
     
     if cache(): # True
@@ -90,7 +90,7 @@ def add(*nums, cache=settings.cache):
 ## @TODO
 
 * I'm exploring options right now to allow methods to be called directly
-    on self._val but am weighing the pros and cons. The SettingsNumber
+    on self._val but am weighing the pros and cons. The SejingsNumber
     class published is something I'm exploring and should not be 
     depended on as it may change. 
 * Context manager
