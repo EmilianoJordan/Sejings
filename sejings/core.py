@@ -10,6 +10,8 @@ class Sejings:
 
         super().__setattr__('_val', value)
 
+        super().__setattr__('children', dict())
+
     def __call__(self, value=...):
 
         if value is ...:
@@ -31,28 +33,83 @@ class Sejings:
             super().__setattr__(key, value)
             return
 
+        children: dict = super().__getattribute__('children')
+
         if isinstance(value, Sejings):
             super().__setattr__(key, value)
+            children[key] = value
             return
 
         try:
             obj = super().__getattribute__(key)
             obj(value)
         except AttributeError:
-            super().__setattr__(key, Sejings(value))
+            new_sejings = Sejings(value)
+            super().__setattr__(key, new_sejings)
+            children[key] = new_sejings
             return
 
-    def __copy__(self):
-        new = self.__class__()
+    def __len__(self):
+        return len(self.children)
 
-        for attr, val in self.__dict__.items():
-            if hasattr(val, '__copy__'):
+    def __copy__(self):
+        cls = self.__class__
+
+        new = cls()
+
+        iterator: dict = self.children
+        iterator['_val'] = self._val
+
+        for attr, val in iterator.items():
+            if isinstance(val, cls):
                 setattr(new, attr, val.__copy__())
-            elif hasattr(val, 'copy'):
-                setattr(new, attr, val.copy())
             else:
                 setattr(new, attr, val)
 
         return new
+
+    def __deepcopy__(self, memodict):
+
+        cls = self.__class__
+
+        new = cls()
+
+        memodict[id(self)] = new
+
+        iterator: dict = self.children
+        iterator['_val'] = self._val
+
+        for attr, val in iterator.items():
+
+            if id(val) in memodict:
+                setattr(new, attr, memodict[id(val)])
+
+            elif hasattr(val, '__deepcopy__'):
+                setattr(new, attr, val.__deepcopy__(memodict))
+
+            elif hasattr(val, 'copy') and callable(getattr(val, 'copy')):
+
+                attr_copy = val.copy()
+
+                if attr is not attr_copy:
+                    memodict[id(val)] = attr_copy
+
+                setattr(new, attr, attr_copy)
+
+            elif hasattr(val, '__copy__'):
+
+                attr_copy = val.__copy__()
+
+                if attr is not attr_copy:
+                    memodict[id(val)] = attr_copy
+
+                setattr(new, attr, attr_copy)
+
+            else:
+
+                setattr(new, attr, val)
+
+        return new
+
 
 sejings = Sejings()
