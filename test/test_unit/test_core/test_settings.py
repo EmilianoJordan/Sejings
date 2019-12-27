@@ -4,17 +4,13 @@
 from sejings import Sejings
 
 
-def test_initial():
-    s = Sejings()
+def test_initial(settings):
 
-    s.one = 'one'
-    s.two = 'two'
+    assert settings.one() == 'one'
+    assert settings.two() == 'two'
 
-    assert s.one() == 'one'
-    assert s.two() == 'two'
+    settings.one = 'uno'
+    settings.two = 'dos'
 
-    s.one = 'uno'
-    s.two = 'dos'
-
-    assert s.one() == 'uno'
-    assert s.two() == 'dos'
+    assert settings.one() == 'uno'
+    assert settings.two() == 'dos'

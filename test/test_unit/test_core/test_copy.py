@@ -6,46 +6,31 @@ from copy import copy
 from sejings import Sejings
 
 
-def test_initial():
-    s = Sejings()
+def test_initial(settings):
 
-    s.one = 'one'
-    s.two = 'two'
-    s.one.one = 'one.one'
-    s.one.two = 'one.two'
-    s.two.three.four = 'two.three.four'
+    c = copy(settings)
 
-    c = copy(s)
+    assert c is not settings
 
-    assert c is not s
+    assert c.one() == settings.one()
+    assert c.one() is settings.one()
+    assert c.one is not settings.one
 
-    assert c.one() == s.one()
-    assert c.one() is s.one()
-    assert c.one is not s.one
-
-    assert c.two.three.four() == s.two.three.four()
-    assert c.two.three.four() is s.two.three.four()
-    assert c.two.three.four is not s.two.three.four
+    assert c.two.three.four() == settings.two.three.four()
+    assert c.two.three.four() is settings.two.three.four()
+    assert c.two.three.four is not settings.two.three.four
 
 
-def test_mutable_objects():
+def test_mutable_objects(settings):
 
-    s = Sejings()
+    c = copy(settings)
 
-    s.one = 'one'
-    s.two = 'two'
-    s.one.one = ['one', 'one']
-    s.one.two = ['one', 'two']
-    s.two.three.four = ['two', 'three', 'four']
+    assert c is not settings
 
-    c = copy(s)
+    assert c.one() == settings.one()
+    assert c.one() is settings.one()
+    assert c.one is not settings.one
 
-    assert c is not s
-
-    assert c.one() == s.one()
-    assert c.one() is s.one()
-    assert c.one is not s.one
-
-    assert c.two.three.four() == s.two.three.four()
-    assert c.two.three.four() is s.two.three.four()
-    assert c.two.three.four is not s.two.three.four
+    assert c.two.three.four() == settings.two.three.four()
+    assert c.two.three.four() is settings.two.three.four()
+    assert c.two.three.four is not settings.two.three.four

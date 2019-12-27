@@ -4,29 +4,31 @@
 from sejings import Sejings
 
 
-def test_basic():
+def test_basic(settings):
 
-    s = Sejings()
-
-    s.one = 'one'
-    s.two = 'two'
-    s.one.one = ['one', 'one']
-    s.one.two = ['one', 'two']
-    s.two.three.four = ['two', 'three', 'four']
-
-    result = s.to_dict()
+    result = settings.to_dict()
 
     assert 'one' in result
-    assert result['one'] == s.one()
+    assert result['one'] == settings.one()
 
     assert 'two' in result
-    assert result['two'] == s.two()
+    assert result['two'] == settings.two()
 
     assert 'one.one' in result
-    assert result['one.one'] == s.one.one()
+    assert result['one.one'] == settings.one.one()
 
     assert 'one.two' in result
-    assert result['one.two'] == s.one.two()
+    assert result['one.two'] == settings.one.two()
 
     assert 'two.three.four' in result
-    assert result['two.three.four'] == s.two.three.four()
+    assert result['two.three.four'] == settings.two.three.four()
+
+    # I want mutable object copied to avoid errors
+
+    assert 'one.one.list' in result
+    assert result['one.one.list'] == settings.one.one.list()
+    assert result['one.one.list'] is not settings.one.one.list()
+
+    assert 'types.dict' in result
+    assert result['types.dict'] == settings.types.dict()
+    assert result['types.dict'] is not settings.types.dict()

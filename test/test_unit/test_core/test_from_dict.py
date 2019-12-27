@@ -27,4 +27,3 @@ def test_basic():
 
     assert input_dict['two.three.four'] == c.two.three.four()
     assert input_dict['two.three.four'] is not c.two.three.four()
-    

@@ -1,8 +1,11 @@
 # Created: 10/12/2019
 # Author:  Emiliano Jordan,
 # Project: sejings
+import configparser
 import copy
 from collections import defaultdict
+from pathlib import Path
+from typing import Optional, Union
 
 from .utils import in_doctest
 
@@ -114,6 +117,19 @@ class Sejings:
 
         return new
 
+    def to_configparser(
+            self,
+            config: Optional[configparser.ConfigParser] = None,
+            label: str = 'Sejings'
+    ):
+
+        if config is None:
+            config = configparser.ConfigParser()
+
+        config[label] = self.to_dict()
+
+        return config
+
     def to_dict(self, storage_dict=None, key=''):
 
         if storage_dict is None:
@@ -159,7 +175,22 @@ class Sejings:
 
             getattr(self, key).update_from_dict(val)
 
-    def to_file(self, label='Sejings'):
-        pass
+    def to_file(
+            self,
+            file: Union[str, Path],
+            mode: str = 'w',
+            label='Sejings',
+    ):
+
+        config = self.to_configparser(label=label)
+
+        with open(file, mode=mode) as f:
+            config.write(config)
+
+    @classmethod
+    def from_dict(cls, storage_dict: dict):
+        sejing = cls()
+        return sejing.update_from_dict(storage_dict)
+
 
 sejings = Sejings()
