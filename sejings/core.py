@@ -1,12 +1,15 @@
 # Created: 10/12/2019
 # Author:  Emiliano Jordan,
 # Project: sejings
+import copy
+from collections import defaultdict
+
 from .utils import in_doctest
 
 
 class Sejings:
 
-    def __init__(self, value=None):
+    def __init__(self, value=...):
 
         super().__setattr__('_val', value)
 
@@ -111,5 +114,52 @@ class Sejings:
 
         return new
 
+    def to_dict(self, storage_dict=None, key=''):
+
+        if storage_dict is None:
+            storage_dict = dict()
+
+        if key and key[0] == '.':
+            key = key[1:]
+
+        if self._val is not ...:
+            storage_dict[key] = copy.deepcopy(self._val)
+
+        for iter_key, val in self.children.items():
+            val.to_dict(storage_dict, f'{key}.{iter_key}')
+
+        return storage_dict
+
+    def update_from_dict(self, storage_dict: dict):
+
+        sorting_dict = defaultdict(dict)
+
+        for key, val in storage_dict.items():
+
+            if '.' not in key:
+
+                val = copy.deepcopy(val)
+
+                if key not in self.__dict__:
+                    setattr(self, key, Sejings(val))
+                else:
+                    getattr(self, key)(val)
+
+                continue
+
+            attr_parts = key.split('.')
+            first_attr, attr_string = attr_parts[0], '.'.join(attr_parts[1:])
+
+            sorting_dict[first_attr][attr_string] = val
+
+        for key, val in sorting_dict.items():
+
+            if key not in self.__dict__:
+                setattr(self, key, Sejings())
+
+            getattr(self, key).update_from_dict(val)
+
+    def to_file(self, label='Sejings'):
+        pass
 
 sejings = Sejings()
