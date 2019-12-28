@@ -3,9 +3,10 @@
 # Project: sejings
 import configparser
 import copy
+import json
 from collections import defaultdict
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional, Union, List
 
 from .utils import in_doctest
 
@@ -120,13 +121,15 @@ class Sejings:
     def to_configparser(
             self,
             config: Optional[configparser.ConfigParser] = None,
-            label: str = 'Sejings'
+            label: str = 'Sejings',
+            parser='to_dict'
     ):
 
         if config is None:
             config = configparser.ConfigParser()
 
-        config[label] = self.to_dict()
+        parser = getattr(self, parser)
+        config[label] = parser()
 
         return config
 
@@ -145,6 +148,23 @@ class Sejings:
             val.to_dict(storage_dict, f'{key}.{iter_key}')
 
         return storage_dict
+
+    def to_json(self):
+
+        return json.dumps(self.to_dict())
+
+    def to_file(
+            self,
+            file: Union[str, Path],
+            mode: str = 'w',
+            label='Sejings',
+            parser='to_dict'
+    ):
+
+        config = self.to_configparser(label=label, parser=parser)
+
+        with open(file, mode=mode) as f:
+            config.write(f)
 
     def update_from_dict(self, storage_dict: dict):
 
@@ -175,22 +195,51 @@ class Sejings:
 
             getattr(self, key).update_from_dict(val)
 
-    def to_file(
-            self,
-            file: Union[str, Path],
-            mode: str = 'w',
-            label='Sejings',
-    ):
+    @classmethod
+    def from_dict(
+            cls,
+            storage_dict: dict
+    ) -> 'Sejings':
 
-        config = self.to_configparser(label=label)
+        sejing = cls()
+        sejing.update_from_dict(storage_dict)
 
-        with open(file, mode=mode) as f:
-            config.write(config)
+        return sejing
 
     @classmethod
-    def from_dict(cls, storage_dict: dict):
-        sejing = cls()
-        return sejing.update_from_dict(storage_dict)
+    def from_file(
+            cls,
+            file: Union[str, Path],
+            labels: Union[List[str], str, None] = None,
+            parser='from_dict'
+    ) -> 'Sejings':
+
+        config = configparser.ConfigParser()
+
+        config.read(file)
+
+        if labels is None:
+            labels = list(config.keys())
+        if not isinstance(labels, list):
+            labels = [labels]
+
+        iterator = {
+            key: val
+            for key, val
+            in config.items()
+            if key in labels
+        }
+
+        build_dict = dict()
+
+        for key, val in iterator.items():
+            build_dict = {**build_dict, **val}
+
+        if len(build_dict) == 0:
+            raise LookupError(f'label does not exist in file: {file}')
+
+        parser = getattr(cls, parser)
+        return parser(build_dict)
 
 
 sejings = Sejings()

@@ -3,11 +3,8 @@
 # Project: sejings
 from copy import deepcopy
 
-from sejings import Sejings
 
-
-def test_initial(settings):
-
+def test_immutable(settings):
     c = deepcopy(settings)
 
     assert c is not settings
@@ -20,17 +17,20 @@ def test_initial(settings):
     assert c.two.three.four() is settings.two.three.four()  # strings are immutable.
     assert c.two.three.four is not settings.two.three.four
 
+    assert c.path() == settings.path()
+    assert c.path() is settings.path()  # pathlike objects are immutable
+    assert c.path is not settings.path
+
 
 def test_mutable_objects(settings):
-
     c = deepcopy(settings)
 
     assert c is not settings
 
-    assert c.one() == settings.one()
-    assert c.one() is settings.one()  # strings are immutable.
-    assert c.one is not settings.one
-
     assert c.types.list() == settings.types.list()
     assert c.types.list() is not settings.types.list()
     assert c.types.list is not settings.types.list
+
+    assert c.types.dict() == settings.types.dict()
+    assert c.types.dict() is not settings.types.dict()
+    assert c.types.dict is not settings.types.dict

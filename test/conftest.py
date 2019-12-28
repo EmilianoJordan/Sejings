@@ -39,24 +39,42 @@ def blank_ini_file(data_root) -> Path:
         file.unlink()
 
 
+@fixture(scope='function')
+def test_ini_file_path(data_root) -> Path:
+    file = data_root / 'test.ini'
+
+    if file.is_file():
+        file.unlink()
+
+    yield file
+
+    if file.is_file():
+        file.unlink()
+
+
 ########################################################################
 #
 # Example Sejings objects labeled as settings and variations of.
 #
 ########################################################################
 @fixture(scope='session')
-def _settings() -> Sejings:
+def _string_only_settings():
     settings = Sejings()
 
     settings.one = 'one'
     settings.two = 'two'
     settings.one.one = 'one.one'
     settings.one.two = 'one.two'
+    settings.two.three.four = 'two.three.four'
+    return settings
 
+
+@fixture(scope='session')
+def _settings(_string_only_settings) -> Sejings:
+    settings = copy.deepcopy(_string_only_settings)
     settings.one.one.list = ['one', 'one']
     settings.one.two.list = ['one', 'two']
 
-    settings.two.three.four = 'two.three.four'
     settings.types.list = ['two', 'three', 'four', 'list']
     settings.types.dict = {
         2: 'two',
@@ -67,8 +85,12 @@ def _settings() -> Sejings:
 
 
 @fixture(scope='function')
-def settings(_settings, blank_ini_file):
+def string_only_settings(_string_only_settings):
+    return copy.deepcopy(_string_only_settings)
 
+
+@fixture(scope='function')
+def settings(_settings, blank_ini_file) -> Sejings:
     s = copy.deepcopy(_settings)
     s.path = blank_ini_file
 
