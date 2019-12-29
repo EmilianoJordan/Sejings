@@ -3,5 +3,6 @@
 # Project: sejings
 
 from .__version__ import *
+from . import utils
 from .decorator import extract_sejings
 from .core import Sejings, sejings

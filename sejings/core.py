@@ -1,15 +1,25 @@
 # Created: 10/12/2019
 # Author:  Emiliano Jordan,
 # Project: sejings
-import configparser
-import copy
-import json
-from collections import defaultdict
-from pathlib import Path
-from typing import Optional, Union, List
+import sys
 
-from .utils import in_doctest
+def _in_doctest():
+    """
+    Determined by observation
 
+    Thanks! https://stackoverflow.com/questions/8116118/
+    how-to-determine-whether-code-is-running-in-a-doctest
+    """
+    if '_pytest.doctest' in sys.modules:
+        return True
+    ##
+    if hasattr(sys.modules['__main__'], '_SpoofOut'):
+        return True
+    ##
+    if sys.modules['__main__'].__dict__.get('__file__', '').endswith('/pytest'):
+        return True
+    ##
+    return False
 
 class Sejings:
 
@@ -28,7 +38,7 @@ class Sejings:
 
     def __getattr__(self, item):
 
-        if item == '__wrapped__' and in_doctest():
+        if item == '__wrapped__' and _in_doctest():
             raise AttributeError
 
         setattr(self, item, Sejings())
@@ -118,128 +128,6 @@ class Sejings:
 
         return new
 
-    def to_configparser(
-            self,
-            config: Optional[configparser.ConfigParser] = None,
-            label: str = 'Sejings',
-            parser='to_dict'
-    ):
-
-        if config is None:
-            config = configparser.ConfigParser()
-
-        parser = getattr(self, parser)
-        config[label] = parser()
-
-        return config
-
-    def to_dict(self, storage_dict=None, key=''):
-
-        if storage_dict is None:
-            storage_dict = dict()
-
-        if key and key[0] == '.':
-            key = key[1:]
-
-        if self._val is not ...:
-            storage_dict[key] = copy.deepcopy(self._val)
-
-        for iter_key, val in self.children.items():
-            val.to_dict(storage_dict, f'{key}.{iter_key}')
-
-        return storage_dict
-
-    def to_json(self):
-
-        return json.dumps(self.to_dict())
-
-    def to_file(
-            self,
-            file: Union[str, Path],
-            mode: str = 'w',
-            label='Sejings',
-            parser='to_dict'
-    ):
-
-        config = self.to_configparser(label=label, parser=parser)
-
-        with open(file, mode=mode) as f:
-            config.write(f)
-
-    def update_from_dict(self, storage_dict: dict):
-
-        sorting_dict = defaultdict(dict)
-
-        for key, val in storage_dict.items():
-
-            if '.' not in key:
-
-                val = copy.deepcopy(val)
-
-                if key not in self.__dict__:
-                    setattr(self, key, Sejings(val))
-                else:
-                    getattr(self, key)(val)
-
-                continue
-
-            attr_parts = key.split('.')
-            first_attr, attr_string = attr_parts[0], '.'.join(attr_parts[1:])
-
-            sorting_dict[first_attr][attr_string] = val
-
-        for key, val in sorting_dict.items():
-
-            if key not in self.__dict__:
-                setattr(self, key, Sejings())
-
-            getattr(self, key).update_from_dict(val)
-
-    @classmethod
-    def from_dict(
-            cls,
-            storage_dict: dict
-    ) -> 'Sejings':
-
-        sejing = cls()
-        sejing.update_from_dict(storage_dict)
-
-        return sejing
-
-    @classmethod
-    def from_file(
-            cls,
-            file: Union[str, Path],
-            labels: Union[List[str], str, None] = None,
-            parser='from_dict'
-    ) -> 'Sejings':
-
-        config = configparser.ConfigParser()
-
-        config.read(file)
-
-        if labels is None:
-            labels = list(config.keys())
-        if not isinstance(labels, list):
-            labels = [labels]
-
-        iterator = {
-            key: val
-            for key, val
-            in config.items()
-            if key in labels
-        }
-
-        build_dict = dict()
-
-        for key, val in iterator.items():
-            build_dict = {**build_dict, **val}
-
-        if len(build_dict) == 0:
-            raise LookupError(f'label does not exist in file: {file}')
-
-        parser = getattr(cls, parser)
-        return parser(build_dict)
 
 
 sejings = Sejings()

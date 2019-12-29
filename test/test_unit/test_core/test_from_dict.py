@@ -1,7 +1,7 @@
 # Created: 12/27/2019
 # Author:  Emiliano Jordan,
 # Project: sejings
-from sejings import Sejings
+from sejings import Sejings, utils
 
 
 def test_basic():
@@ -14,7 +14,7 @@ def test_basic():
     }
 
     c = Sejings()
-    c.update_from_dict(input_dict)
+    utils.update_from_dict(c, input_dict)
 
     assert input_dict['one'] == c.one()
     assert input_dict['two'] == c.two()

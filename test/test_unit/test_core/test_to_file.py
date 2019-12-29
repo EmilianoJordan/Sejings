@@ -4,6 +4,7 @@
 import configparser
 from pathlib import Path
 
+from sejings import utils
 
 def test_basic(settings, test_ini_file_path):
 
@@ -11,7 +12,7 @@ def test_basic(settings, test_ini_file_path):
 
     label = 'Settings'
 
-    settings.to_file(test_ini_file_path, label=label)
+    utils.to_config_file(settings, test_ini_file_path, label=label)
 
     config = configparser.ConfigParser()
 

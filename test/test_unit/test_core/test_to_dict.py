@@ -1,12 +1,12 @@
 # Created: 12/27/2019
 # Author:  Emiliano Jordan,
 # Project: sejings
-from sejings import Sejings
+from sejings import Sejings, utils
 
 
 def test_basic(settings):
 
-    result = settings.to_dict()
+    result = utils.to_dict(settings)
 
     assert 'one' in result
     assert result['one'] == settings.one()
