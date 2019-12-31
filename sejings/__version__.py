@@ -8,7 +8,7 @@ __description__ = 'A simple package for rapidly developing system sejings.'
 __licence__ = 'Apache License 2.0'
 __name__ = 'sejings'
 __url__ = 'https://github.com/EmilianoJordan/Sejings'
-__version__ = '0.0.4'
+__version__ = '0.0.5'
 
 __all__ = [
     '__author__', '__author_email__', '__description__', '__licence__',

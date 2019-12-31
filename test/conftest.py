@@ -72,9 +72,12 @@ def _string_only_settings():
 @fixture(scope='session')
 def _settings(_string_only_settings) -> Sejings:
     settings = copy.deepcopy(_string_only_settings)
+    settings.boolean = False
+    settings.int = 16
+    settings.float = 1.6
     settings.one.one.list = ['one', 'one']
     settings.one.two.list = ['one', 'two']
-
+    settings.path = blank_ini_file
     settings.types.list = ['two', 'three', 'four', 'list']
     settings.types.dict = {
         2: 'two',
@@ -93,5 +96,4 @@ def string_only_settings(_string_only_settings):
 def settings(_settings, blank_ini_file) -> Sejings:
     s = copy.deepcopy(_settings)
     s.path = blank_ini_file
-
     return s

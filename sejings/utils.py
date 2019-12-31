@@ -15,16 +15,16 @@ def to_configparser(
         sejing,
         config: Optional[configparser.ConfigParser] = None,
         label: str = 'Sejings',
-):
+) -> configparser.ConfigParser:
     if config is None:
         config = configparser.ConfigParser()
 
-    config[label] = to_dict(sejing)
+    config[label] = to_dict(sejing, encode=True)
 
     return config
 
 
-def to_dict(sejing, storage_dict=None, key=''):
+def to_dict(sejing, storage_dict=None, key='', encode=False) -> dict:
     if storage_dict is None:
         storage_dict = dict()
 
@@ -32,15 +32,20 @@ def to_dict(sejing, storage_dict=None, key=''):
         key = key[1:]
 
     if sejing() is not ...:
-        storage_dict[key] = copy.deepcopy(sejing())
+        storage_dict[key] = copy.deepcopy(sejing(encode=encode))
 
-    for iter_key, val in sejing.children.items():
-        to_dict(val, storage_dict, f'{key}.{iter_key}')
+    for iter_key, val in sejing._children.items():
+        to_dict(
+            sejing=val,
+            storage_dict=storage_dict,
+            key=f'{key}.{iter_key}',
+            encode=encode
+        )
 
     return storage_dict
 
 
-def to_json(sejing):
+def to_json(sejing) -> str:
     return json.dumps(to_dict(sejing))
 
 
@@ -68,7 +73,8 @@ def update_from_dict(sejing, storage_dict: dict):
             if key not in sejing.__dict__:
                 setattr(sejing, key, Sejings(val))
             else:
-                getattr(sejing, key)(val)
+                obj = getattr(sejing, key)
+                obj(obj._decoder(val))
 
             continue
 
@@ -85,19 +91,11 @@ def update_from_dict(sejing, storage_dict: dict):
         update_from_dict(getattr(sejing, key), val)
 
 
-def from_dict(
-        storage_dict: dict
-) -> 'Sejings':
-    sejing = Sejings()
-    update_from_dict(sejing, storage_dict)
-
-    return sejing
-
-
-def from_config_file(
+def update_from_config_file(
+        sejings: Sejings,
         file: Union[str, Path],
         labels: Union[List[str], str, None] = None,
-) -> 'Sejings':
+):
     config = configparser.ConfigParser()
 
     config.read(file)
@@ -122,4 +120,4 @@ def from_config_file(
     if len(build_dict) == 0:
         raise LookupError(f'label does not exist in file: {file}')
 
-    return from_dict(build_dict)
+    update_from_dict(sejing=sejings, storage_dict=build_dict)

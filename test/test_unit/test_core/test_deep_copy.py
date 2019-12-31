@@ -17,9 +17,6 @@ def test_immutable(settings):
     assert c.two.three.four() is settings.two.three.four()  # strings are immutable.
     assert c.two.three.four is not settings.two.three.four
 
-    assert c.path() == settings.path()
-    assert c.path() is settings.path()  # pathlike objects are immutable
-    assert c.path is not settings.path
 
 
 def test_mutable_objects(settings):
@@ -34,3 +31,7 @@ def test_mutable_objects(settings):
     assert c.types.dict() == settings.types.dict()
     assert c.types.dict() is not settings.types.dict()
     assert c.types.dict is not settings.types.dict
+
+    assert c.path() == settings.path()
+    assert c.path() is not settings.path()
+    assert c.path is not settings.path
