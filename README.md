@@ -1,11 +1,19 @@
 # Sejings
 
 Sejings is meant to be a quick and simple tool to rapidly integrate 
-project sejings. This was inspired by a desire to work with a 
-solution similar to MatPlotLib's rcParams and to improve on the 
-developer experience and developing speed by avoiding None checks.
+project sejings. The problem I've seen many times with libraries is that
+it's often hard to have a way for the user to change aspects or functionality 
+deep in a library. Scientific libraries often have arguments for a function 
+that are unavailable to a developer because they're hidden behind three function calls.
+One attempt to solve this is to pass along keyword arguments, which leads to 
+documentation and maintainability issues. This is evident by the popularity of
+**kwargs in many data science libraries. The other solution is to work with dictionaries 
+similar to matplotlib's rcParams. Yet this leads to a tedious and time consuming
+developer experience by forcing `if xxx is None` checks everywhere.
 
-This is the development experience I'm trying to avoid:
+To show you my solution let's first start of with a rcParams style 
+function:
+
 ```python
 def add(*nums, cache=None, cache_path=None):
     
@@ -89,12 +97,5 @@ def add(*nums, cache=sejings.cache):
 
 ## @TODO
 
-* I'm exploring options right now to allow methods to be called directly
-    on self._val but am weighing the pros and cons. The SejingsNumber
-    class published is something I'm exploring and should not be 
-    depended on as it may change. 
 * Context manager
-* Copy functionality
-* Iteration
 * __getitem__, __setitem__
-* IO to file. Look into integration with configparser.
