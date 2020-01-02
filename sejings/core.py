@@ -5,6 +5,7 @@ import copy
 import json
 import sys
 from pathlib import WindowsPath, Path, PosixPath
+from typing import Callable
 
 
 def _in_doctest():
@@ -48,14 +49,21 @@ sejings_type_mapping = {
 
 
 class Sejings:
+    _encoder: Callable
+    _decoder: Callable
+    _name: str
+    _val: object
 
-    def __init__(self, value=(..., blank, blank)):
+    def __init__(self, value=(..., blank, blank), name=''):
 
         self._set_value(value)
-
+        super().__setattr__('_name', name)
         super().__setattr__('_children', dict())
 
-    def __call__(self, value=(..., blank, blank), encode=False):
+    def __call__(self, value=(..., blank, blank), encode=False, name=''):
+
+        if name != '':
+            super().__setattr__('_name', name)
 
         if isinstance(value, tuple) and value[0] is ...:
             if encode:
@@ -69,7 +77,7 @@ class Sejings:
         if item == '__wrapped__' and _in_doctest():
             raise AttributeError
 
-        setattr(self, item, Sejings())
+        setattr(self, item, Sejings(name=f'{self._name}.{item}'))
         return super().__getattribute__(item)
 
     def __setattr__(self, key, value):
@@ -79,15 +87,17 @@ class Sejings:
             return
 
         if isinstance(value, Sejings):
+            value(name=f'{self._name}.{key}')
             super().__setattr__(key, value)
             self._children[key] = value
+
             return
 
         try:
             obj = super().__getattribute__(key)
-            obj(value)
+            obj(value, name=f'{self._name}.{key}')
         except AttributeError:
-            new_sejings = Sejings(value)
+            new_sejings = Sejings(value, name=f'{self._name}.{key}')
             super().__setattr__(key, new_sejings)
             self._children[key] = new_sejings
             return
@@ -99,7 +109,7 @@ class Sejings:
 
         cls = self.__class__
 
-        new = cls((self._val, self._decoder, self._encoder))
+        new = cls((self._val, self._decoder, self._encoder), name=self._name)
 
         iterator: dict = copy.copy(self._children)
 
@@ -113,43 +123,23 @@ class Sejings:
 
     def __deepcopy__(self, memodict):
 
+        # noinspection PyArgumentList
         new_val = copy.deepcopy(self._val, memodict)
 
-        new = self.__class__((new_val, self._decoder, self._encoder))
+        new = self.__class__((new_val, self._decoder, self._encoder), name=self._name)
 
-        iterator: dict = copy.copy(self._children)
-
-        for attr, val in iterator.items():
+        for attr, val in self._children.items():
 
             if id(val) in memodict:
                 setattr(new, attr, memodict[id(val)])
-
-            elif hasattr(val, '__deepcopy__'):
-                setattr(new, attr, val.__deepcopy__(memodict))
-
-            elif hasattr(val, 'copy') and callable(getattr(val, 'copy')):
-
-                attr_copy = val.copy()
-
-                if attr is not attr_copy:
-                    memodict[id(val)] = attr_copy
-
-                setattr(new, attr, attr_copy)
-
-            elif hasattr(val, '__copy__'):
-
-                attr_copy = val.__copy__()
-
-                if attr is not attr_copy:
-                    memodict[id(val)] = attr_copy
-
-                setattr(new, attr, attr_copy)
-
             else:
-
-                setattr(new, attr, val)
+                # noinspection PyArgumentList
+                setattr(new, attr, copy.deepcopy(val, memodict))
 
         return new
+
+    def __repr__(self):
+        return f'<{self._name} {repr(self._val)}>'
 
     def _set_value(self, value):
 
@@ -184,5 +174,6 @@ class Sejings:
         super().__setattr__('_val', value)
         super().__setattr__('_decoder', decoder)
         super().__setattr__('_encoder', encoder)
+
 
 sejings = Sejings()

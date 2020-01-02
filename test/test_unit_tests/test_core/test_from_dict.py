@@ -13,7 +13,7 @@ def test_basic():
         'two.three.four': ['two', 'three', 'four']
     }
 
-    c = Sejings()
+    c = Sejings(name='c')
     utils.update_from_dict(c, input_dict)
 
     assert input_dict['one'] == c.one()

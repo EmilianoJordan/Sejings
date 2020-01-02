@@ -59,7 +59,7 @@ def test_ini_file_path(data_root) -> Path:
 ########################################################################
 @fixture(scope='session')
 def _string_only_settings():
-    settings = Sejings()
+    settings = Sejings(name='settings')
 
     settings.one = 'one'
     settings.two = 'two'
